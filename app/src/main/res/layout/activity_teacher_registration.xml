@@ -42,4 +42,9 @@
         android:layout_gravity="center"
         android:layout_marginTop="16dp"/>
 
+    <Spinner
+        android:id="@+id/spinnerClassroom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

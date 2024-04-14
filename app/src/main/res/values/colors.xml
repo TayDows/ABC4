@@ -2,4 +2,5 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="disabled_text_color">#A0A0A0</color> <!-- Light grey color -->
 </resources>

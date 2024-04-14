@@ -38,10 +38,34 @@
         android:hint="Child's Name"/>
 
     <EditText
-        android:id="@+id/editTextChildClass"
+        android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Child's Class"/>
+        android:hint="Password"
+        android:inputType="textPassword"/>
+
+    <TextView
+        android:id="@+id/textViewChildClassPrompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please select child's classroom from the below dropdown"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"/>
+
+    <Spinner
+        android:id="@+id/spinnerClassroom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/textViewSelectedClassroom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Selected Classroom: "
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/btnSubmit"

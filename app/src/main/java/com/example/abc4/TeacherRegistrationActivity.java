@@ -15,6 +15,8 @@ public class TeacherRegistrationActivity extends AppCompatActivity {
     private EditText editTextTeacherEmail;
     private EditText editTextClassroom;
 
+    String[] classrooms = {"Classroom A", "Classroom B", "Classroom C", "Classroom D"};
+
     // Define DatabaseHelper instance
     private DatabaseHelper databaseHelper;
 
