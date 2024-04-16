@@ -3,6 +3,7 @@ package com.example.abc4;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +76,13 @@ public class MyChildActivity extends AppCompatActivity {
 
         // Show the calendar dialog
         calendarView.show(getSupportFragmentManager(), "MATERIAL_PICKER");
+
+        // Set up Edit My Details button
+        Button btnEditDetails = findViewById(R.id.btnEditDetails);
+        btnEditDetails.setOnClickListener(v -> {
+            // Navigate to EditDetailsActivity
+            startActivity(new Intent(MyChildActivity.this, EditDetailsActivity.class));
+        });
     }
 
     // Initialize event data (replace this with your actual event data)

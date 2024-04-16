@@ -5,39 +5,62 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Welcome Message -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome to ABS's E-nursery"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Login Heading -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Login"
         android:textSize="24sp"
+        android:textStyle="bold"
         android:layout_gravity="center"
         android:layout_marginBottom="24dp"/>
 
+    <!-- Email Input Field -->
     <EditText
         android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"/>
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:backgroundTint="@color/colorPrimaryDark"/>
 
+    <!-- Password Input Field -->
     <EditText
         android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
-        android:inputType="textPassword"/>
+        android:inputType="textPassword"
+        android:backgroundTint="@color/colorPrimaryDark"/>
 
+    <!-- Sign In Button -->
     <Button
         android:id="@+id/btnSignIn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Sign In"
-        android:layout_marginTop="16dp"/>
+        android:textAllCaps="false"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/colorAccent"/>
 
+    <!-- Register Button -->
     <Button
         android:id="@+id/btnRegister2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Register"
-        android:layout_marginTop="16dp"/>
+        android:textAllCaps="false"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/colorPrimary"/>
 
 </LinearLayout>
