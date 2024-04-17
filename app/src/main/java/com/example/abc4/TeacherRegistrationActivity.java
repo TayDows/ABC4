@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,9 +15,10 @@ public class TeacherRegistrationActivity extends AppCompatActivity {
 
     private EditText editTextTeacherName;
     private EditText editTextTeacherEmail;
+    private EditText editTextPassword;
+    private EditText editTextClassroom; // Changed from Spinner to EditText for classroom
     private Spinner spinnerClassroom;
 
-    // Define DatabaseHelper instance
     private DatabaseHelper databaseHelper;
 
     @Override
@@ -24,67 +26,67 @@ public class TeacherRegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_registration);
 
-        // Initialize DatabaseHelper
         databaseHelper = new DatabaseHelper(this);
 
-        // Initialize UI elements
         editTextTeacherName = findViewById(R.id.editTextTeacherName);
         editTextTeacherEmail = findViewById(R.id.editTextTeacherEmail);
+        editTextPassword = findViewById(R.id.editTextPassword);
+        editTextClassroom = findViewById(R.id.editTextClassroom); // Changed from Spinner to EditText
         spinnerClassroom = findViewById(R.id.spinnerClassroom);
-        Button btnSubmit = findViewById(R.id.btnTeacherSubmit);
 
-        // Set up classroom spinner
         setupClassroomSpinner();
 
-        // Set click listener for submit button
+        // Set up listener for spinner item selection
+        spinnerClassroom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // Get the selected classroom from the spinner
+                String selectedClassroom = parentView.getItemAtPosition(position).toString();
+                // Set the selected classroom in the EditText field
+                editTextClassroom.setText(selectedClassroom);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Do nothing if nothing is selected
+            }
+        });
+
+        Button btnSubmit = findViewById(R.id.btnTeacherSubmit);
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle submit action
                 submitTeacherDetails();
             }
         });
     }
 
     private void setupClassroomSpinner() {
-        // Define classroom options
         String[] classrooms = {"Classroom A", "Classroom B", "Classroom C", "Classroom D"};
-
-        // Create adapter for spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, classrooms);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // Set adapter to spinner
         spinnerClassroom.setAdapter(adapter);
     }
 
     private void submitTeacherDetails() {
-        // Get user input
         String name = editTextTeacherName.getText().toString();
         String email = editTextTeacherEmail.getText().toString();
-        String classroom = spinnerClassroom.getSelectedItem().toString();
+        String password = editTextPassword.getText().toString();
+        String classroom = editTextClassroom.getText().toString(); // Get classroom from EditText
 
-        // Perform validation (replace this with your actual validation logic)
-        if (isValid(name, email, classroom)) {
-            // Insert teacher details into database
-            long result = databaseHelper.insertTeacher(name, email, classroom);
-
+        if (isValid(name, email, password, classroom)) {
+            long result = databaseHelper.insertTeacher(name, email, password, classroom);
             if (result != -1) {
-                // Database insertion successful, show success toast
                 Toast.makeText(this, "Teacher registered successfully", Toast.LENGTH_SHORT).show();
             } else {
-                // Database insertion failed, show error toast
                 Toast.makeText(this, "Failed to register teacher", Toast.LENGTH_SHORT).show();
             }
         } else {
-            // Registration failed due to invalid input, show error toast
             Toast.makeText(this, "Invalid input", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private boolean isValid(String name, String email, String classroom) {
-        // Add your validation logic here (e.g., check email format, required fields)
-        // For demo purposes, just check if all fields are not empty
-        return !name.isEmpty() && !email.isEmpty() && !classroom.isEmpty();
+    private boolean isValid(String name, String email, String password, String classroom) {
+        return !name.isEmpty() && !email.isEmpty() && !password.isEmpty() && !classroom.isEmpty();
     }
 }

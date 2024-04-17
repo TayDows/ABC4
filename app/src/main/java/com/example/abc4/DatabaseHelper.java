@@ -39,7 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public long insertTeacher(String name, String email, String classroom) {
+    public long insertTeacher(String name, String email, String classroom, String s) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_NAME, name);
