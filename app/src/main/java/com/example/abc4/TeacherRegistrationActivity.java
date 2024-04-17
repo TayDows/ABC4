@@ -1,10 +1,11 @@
 package com.example.abc4;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,9 +14,7 @@ public class TeacherRegistrationActivity extends AppCompatActivity {
 
     private EditText editTextTeacherName;
     private EditText editTextTeacherEmail;
-    private EditText editTextClassroom;
-
-    String[] classrooms = {"Classroom A", "Classroom B", "Classroom C", "Classroom D"};
+    private Spinner spinnerClassroom;
 
     // Define DatabaseHelper instance
     private DatabaseHelper databaseHelper;
@@ -31,8 +30,11 @@ public class TeacherRegistrationActivity extends AppCompatActivity {
         // Initialize UI elements
         editTextTeacherName = findViewById(R.id.editTextTeacherName);
         editTextTeacherEmail = findViewById(R.id.editTextTeacherEmail);
-        editTextClassroom = findViewById(R.id.editTextClassroom);
+        spinnerClassroom = findViewById(R.id.spinnerClassroom);
         Button btnSubmit = findViewById(R.id.btnTeacherSubmit);
+
+        // Set up classroom spinner
+        setupClassroomSpinner();
 
         // Set click listener for submit button
         btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -44,11 +46,23 @@ public class TeacherRegistrationActivity extends AppCompatActivity {
         });
     }
 
+    private void setupClassroomSpinner() {
+        // Define classroom options
+        String[] classrooms = {"Classroom A", "Classroom B", "Classroom C", "Classroom D"};
+
+        // Create adapter for spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, classrooms);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Set adapter to spinner
+        spinnerClassroom.setAdapter(adapter);
+    }
+
     private void submitTeacherDetails() {
         // Get user input
         String name = editTextTeacherName.getText().toString();
         String email = editTextTeacherEmail.getText().toString();
-        String classroom = editTextClassroom.getText().toString();
+        String classroom = spinnerClassroom.getSelectedItem().toString();
 
         // Perform validation (replace this with your actual validation logic)
         if (isValid(name, email, classroom)) {
@@ -67,7 +81,6 @@ public class TeacherRegistrationActivity extends AppCompatActivity {
             Toast.makeText(this, "Invalid input", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     private boolean isValid(String name, String email, String classroom) {
         // Add your validation logic here (e.g., check email format, required fields)

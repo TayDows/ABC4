@@ -23,7 +23,16 @@ public class EditDetailsActivity extends AppCompatActivity {
         // Set up save button
         Button btnSaveDetails = findViewById(R.id.btnSaveDetails);
         btnSaveDetails.setOnClickListener(v -> saveDetails());
+
+        // Set up back button
+        Button backButton = findViewById(R.id.btnBack);
+        backButton.setOnClickListener(v -> finish()); // Finish the activity and navigate back
+
+        // Set up Sign out
+        Button S = findViewById(R.id.btnBack);
+        backButton.setOnClickListener(v -> finish()); // Finish the activity and navigate back
     }
+
 
     private void saveDetails() {
         // Get the entered details from EditText fields

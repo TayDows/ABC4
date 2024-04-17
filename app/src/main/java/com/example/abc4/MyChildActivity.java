@@ -1,22 +1,14 @@
 package com.example.abc4;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import com.google.firebase.auth.FirebaseAuth;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class MyChildActivity extends AppCompatActivity {
@@ -47,42 +39,28 @@ public class MyChildActivity extends AppCompatActivity {
         // Initialize event data (replace this with your actual event data)
         initEventData();
 
-        // Initialize calendar view
-        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
-        MaterialDatePicker<Long> calendarView = builder.build();
-
-        // Set up calendar configuration
-        calendarView.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
-            @Override
-            public void onPositiveButtonClick(Long selection) {
-                Date date = new Date(selection);
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(date);
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-
-                // Check if there's an event for the selected date
-                String eventTitle = eventData.get(getFormattedDate(year, month, day));
-                if (eventTitle != null) {
-                    // Show event details
-                    showEventDetails(eventTitle);
-                } else {
-                    // No event for the selected date
-                    Toast.makeText(MyChildActivity.this, "No event for this date", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        // Show the calendar dialog
-        calendarView.show(getSupportFragmentManager(), "MATERIAL_PICKER");
-
         // Set up Edit My Details button
         Button btnEditDetails = findViewById(R.id.btnEditDetails);
         btnEditDetails.setOnClickListener(v -> {
             // Navigate to EditDetailsActivity
             startActivity(new Intent(MyChildActivity.this, EditDetailsActivity.class));
         });
+
+/*        // Set up Sign Out button
+        Button btnSignOut = findViewById(R.id.btnSignOut);
+        btnSignOut.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            // Navigate to the sign-in activity or perform other actions after sign-out
+            startActivity(new Intent(MyChildActivity.this, SignInActivity.class));
+            finish(); // Finish the current activity to prevent going back to it after sign-out
+        });*/
+    }
+
+    public void signOut(View view) {
+        FirebaseAuth.getInstance().signOut();
+        // Navigate to the sign-in activity or perform other actions after sign-out
+        startActivity(new Intent(MyChildActivity.this, SignInActivity.class));
+        finish(); // Finish the current activity to prevent going back to it after sign-out
     }
 
     // Initialize event data (replace this with your actual event data)
@@ -91,15 +69,6 @@ public class MyChildActivity extends AppCompatActivity {
         eventData.put("2024-04-15", "Event 1");
         eventData.put("2024-04-17", "Event 2");
         eventData.put("2024-04-19", "Event 3");
-    }
-
-    // Format date as yyyy-MM-dd
-    private String getFormattedDate(int year, int month, int day) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day);
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        return sdf.format(calendar.getTime());
     }
 
     // Show event details

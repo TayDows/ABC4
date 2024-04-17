@@ -1,0 +1,11 @@
+<resources>
+    <style name="CalendarViewWeekDayText" parent="android:Widget.CalendarView">
+        <!-- Define the properties for the weekday text -->
+        <item name="android:textColor">@color/weekday_text_color</item>
+        <!-- Add other properties as needed -->
+    </style>
+
+    <style name="CalendarViewDateText" parent="android:Widget.CalendarView">
+        <item name="android:background">@drawable/event_date_background</item>
+    </style>
+</resources>
