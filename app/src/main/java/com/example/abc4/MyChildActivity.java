@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import java.util.HashMap;
 import java.util.Map;
-
 public class MyChildActivity extends AppCompatActivity {
     // Example event data
     private Map<String, String> eventData;
@@ -50,25 +49,21 @@ public class MyChildActivity extends AppCompatActivity {
             // Navigate to EditDetailsActivity
             startActivity(new Intent(MyChildActivity.this, EditDetailsActivity.class));
         });
-    }
 
-
-/*        // Set up Sign Out button
+        // Set up Sign Out button click listener
         Button btnSignOut = findViewById(R.id.btnSignOut);
         btnSignOut.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
-            // Navigate to the sign-in activity or perform other actions after sign-out
-            startActivity(new Intent(MyChildActivity.this, SignInActivity.class));
-            finish(); // Finish the current activity to prevent going back to it after sign-out
-        });*/
+            signOut();
+        });
+    }
 
-
-    public void signOut(View view) {
-        FirebaseAuth.getInstance().signOut();
-        // Navigate to the sign-in activity or perform other actions after sign-out
+    public void signOut() {
+        // After signing out, navigate to the sign-in activity or perform other actions
         startActivity(new Intent(MyChildActivity.this, SignInActivity.class));
         finish(); // Finish the current activity to prevent going back to it after sign-out
     }
+
+
 
     // Initialize event data (replace this with your actual event data)
     private void initEventData() {
