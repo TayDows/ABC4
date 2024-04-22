@@ -1,8 +1,10 @@
 package com.example.abc4;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -67,18 +69,37 @@ public class ParentRegistrationActivity extends AppCompatActivity {
         String password = editTextPassword.getText().toString();
         String classroom = spinnerClassroom.getSelectedItem().toString();
 
+        // Log the values to verify
+        Log.d("ParentRegistration", "Name: " + name);
+        Log.d("ParentRegistration", "Surname: " + surname);
+        Log.d("ParentRegistration", "Email: " + email);
+        Log.d("ParentRegistration", "ChildName: " + childName);
+        Log.d("ParentRegistration", "Password: " + password);
+        Log.d("ParentRegistration", "Classroom: " + classroom);
+
         // Perform validation (replace this with your actual validation logic)
         if (isValid(name, surname, email, childName, password, classroom)) {
             // Registration successful, show success message
             Toast.makeText(this, "Registration Successful", Toast.LENGTH_SHORT).show();
             // Store the details to the database
             storeDetailsToDatabase(name, surname, email, childName, password, classroom);
-            // Optionally, you can navigate to MainActivity here
+
+            // Navigate to MyChildActivity and pass data through Intent extras
+            Intent intent = new Intent(this, MyChildActivity.class);
+            intent.putExtra("name", name);
+            intent.putExtra("surname", surname);
+            intent.putExtra("email", email);
+            intent.putExtra("childName", childName);
+            intent.putExtra("classroom", classroom);
+            startActivity(intent);
         } else {
             // Registration failed, show error message
             Toast.makeText(this, "Invalid input", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
 
     private boolean isValid(String name, String surname, String email, String childName, String password, String classroom) {
         // Add your validation logic here (e.g., check email format, required fields)

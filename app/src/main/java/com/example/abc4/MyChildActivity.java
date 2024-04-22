@@ -22,19 +22,24 @@ public class MyChildActivity extends AppCompatActivity {
 
         // Retrieve data from intent
         Intent intent = getIntent();
-        String userName = intent.getStringExtra("userName");
+        String name = intent.getStringExtra("name");
+        String surname = intent.getStringExtra("surname");
+        String email = intent.getStringExtra("email");
         String childName = intent.getStringExtra("childName");
-        String childClass = intent.getStringExtra("childClass");
+        String classroom = intent.getStringExtra("classroom");
 
         // Display data in TextViews
         TextView textViewUserName = findViewById(R.id.textViewUserName);
-        textViewUserName.setText("User: " + userName);
+        textViewUserName.setText("User: " + name + " " + surname);
+
+        TextView textViewEmail = findViewById(R.id.textViewEmail);
+        textViewEmail.setText("Email: " + email);
 
         TextView textViewChildName = findViewById(R.id.textViewChildName);
         textViewChildName.setText("Child's Name: " + childName);
 
         TextView textViewChildClass = findViewById(R.id.textViewChildClass);
-        textViewChildClass.setText("Child's Class: " + childClass);
+        textViewChildClass.setText("Child's Class: " + classroom);
 
         // Initialize event data (replace this with your actual event data)
         initEventData();
@@ -45,6 +50,8 @@ public class MyChildActivity extends AppCompatActivity {
             // Navigate to EditDetailsActivity
             startActivity(new Intent(MyChildActivity.this, EditDetailsActivity.class));
         });
+    }
+
 
 /*        // Set up Sign Out button
         Button btnSignOut = findViewById(R.id.btnSignOut);
@@ -54,7 +61,7 @@ public class MyChildActivity extends AppCompatActivity {
             startActivity(new Intent(MyChildActivity.this, SignInActivity.class));
             finish(); // Finish the current activity to prevent going back to it after sign-out
         });*/
-    }
+
 
     public void signOut(View view) {
         FirebaseAuth.getInstance().signOut();
