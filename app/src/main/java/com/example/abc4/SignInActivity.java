@@ -1,7 +1,6 @@
 package com.example.abc4;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,8 +11,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.abc4.MainActivity;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -55,6 +52,7 @@ public class SignInActivity extends AppCompatActivity {
             // Define the columns you want to retrieve from the database
             String[] projection = {
                     ParentContract.ParentEntry.COLUMN_NAME,
+                    ParentContract.ParentEntry.COLUMN_SURNAME,
                     ParentContract.ParentEntry.COLUMN_CHILD_NAME,
                     ParentContract.ParentEntry.COLUMN_CLASSROOM
             };
@@ -81,12 +79,15 @@ public class SignInActivity extends AppCompatActivity {
                 String name = cursor.getString(cursor.getColumnIndexOrThrow(ParentContract.ParentEntry.COLUMN_NAME));
                 String childName = cursor.getString(cursor.getColumnIndexOrThrow(ParentContract.ParentEntry.COLUMN_CHILD_NAME));
                 String classroom = cursor.getString(cursor.getColumnIndexOrThrow(ParentContract.ParentEntry.COLUMN_CLASSROOM));
+                String surname = cursor.getString(cursor.getColumnIndexOrThrow(ParentContract.ParentEntry.COLUMN_SURNAME));
 
                 // Sign-in successful, navigate to MyChildActivity and pass data
                 Intent intent = new Intent(SignInActivity.this, MyChildActivity.class);
-                intent.putExtra("userName", name);
+                intent.putExtra("name", name);
+                intent.putExtra("surname", surname);
                 intent.putExtra("childName", childName);
-                intent.putExtra("childClass", classroom);
+                intent.putExtra("email", email);
+                intent.putExtra("classroom", classroom);
                 startActivity(intent);
                 finish(); // Finish this activity to prevent user from navigating back to it
             } else {
@@ -104,23 +105,38 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private boolean isValid(String email, String password) {
-        // Open or create the database
-        SQLiteDatabase db = openOrCreateDatabase("Parents.db", Context.MODE_PRIVATE, null);
+        // Retrieve readable database from ParentDbHelper
+        ParentDbHelper dbHelper = new ParentDbHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        // Execute the query to check if the email and password match
-        Cursor cursor = db.rawQuery("SELECT * FROM parents WHERE email=? AND password=?", new String[]{email, password});
+        // Define the columns you want to retrieve from the database
+        String[] projection = {
+                ParentContract.ParentEntry._ID
+        };
 
-        // Check if the query returned any rows
-        if (cursor.getCount() > 0) {
-            // Sign-in successful, close the cursor and database
-            cursor.close();
-            db.close();
-            return true;
-        } else {
-            // Sign-in failed, close the cursor and database
-            cursor.close();
-            db.close();
-            return false;
-        }
+        // Define the selection criteria
+        String selection = ParentContract.ParentEntry.COLUMN_EMAIL + " = ? AND " +
+                ParentContract.ParentEntry.COLUMN_PASSWORD + " = ?";
+        String[] selectionArgs = {email, password};
+
+        // Perform the query
+        Cursor cursor = db.query(
+                ParentContract.ParentEntry.TABLE_NAME,   // The table to query
+                projection,                             // The array of columns to return
+                selection,                              // The columns for the WHERE clause
+                selectionArgs,                          // The values for the WHERE clause
+                null,                                   // Don't group the rows
+                null,                                   // Don't filter by row groups
+                null                                    // The sort order
+        );
+
+        // Check if the cursor contains any data
+        boolean isValid = cursor.getCount() > 0;
+
+        // Close the cursor and the database connection
+        cursor.close();
+        db.close();
+
+        return isValid;
     }
 }
