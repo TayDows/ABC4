@@ -6,10 +6,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "teachers.db";
     public static final String TABLE_NAME = "teachers";
+
+    public static final String TABLE_NAME_PARENTS = "parents";
     private static final String COL_ID = "id";
     public static final String COL_NAME = "name";
     public static final String COL_EMAIL = "email";
@@ -25,6 +30,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
+
+    // Method to fetch parents belonging to a specific classroom
+    public List<String> getParentsInClassroom(String classroom) {
+        List<String> teachers = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + COL_NAME + " FROM " + TABLE_NAME + " WHERE " + COL_CLASSROOM + "=?";
+        Cursor cursor = db.rawQuery(query, new String[]{classroom});
+        if (cursor != null && cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(COL_NAME);
+            do {
+                if (columnIndex != -1) {
+                    teachers.add(cursor.getString(columnIndex));
+                }
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        db.close();
+        return teachers;
+    }
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {
