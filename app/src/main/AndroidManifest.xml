@@ -28,6 +28,7 @@
         <activity android:name=".UserTypeSelectionActivity" />
         <activity android:name=".MyChildActivity" />
         <activity android:name=".EditDetailsActivity" />
+        <activity android:name=".MyClassroomActivity" />
     </application>
 
 </manifest>

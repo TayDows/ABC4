@@ -1,6 +1,7 @@
 package com.example.abc4;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -37,6 +38,15 @@ public class ParentDbHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + ParentContract.ParentEntry.TABLE_NAME +
                     " ADD COLUMN " + ParentContract.ParentEntry.COLUMN_PASSWORD + " TEXT;");
         }
+    }
+
+    public boolean isValidParent(String email, String password) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM parents WHERE email = ? AND password = ?", new String[]{email, password});
+        boolean isValid = cursor.moveToFirst();
+        cursor.close();
+        db.close();
+        return isValid;
     }
 
 }

@@ -1,6 +1,5 @@
 package com.example.abc4;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,15 +8,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SignInActivity extends AppCompatActivity {
 
     private EditText editTextEmail;
     private EditText editTextPassword;
+    private ParentDbHelper parentDbHelper;
+    private DatabaseHelper databaseHelper;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +26,9 @@ public class SignInActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
         Button btnSignIn = findViewById(R.id.btnSignIn);
+
+        parentDbHelper = new ParentDbHelper(this);
+        databaseHelper = new DatabaseHelper(this);
 
         // Set click listener for sign-in button
         btnSignIn.setOnClickListener(new View.OnClickListener() {
@@ -43,91 +45,54 @@ public class SignInActivity extends AppCompatActivity {
         String email = editTextEmail.getText().toString();
         String password = editTextPassword.getText().toString();
 
-        // Perform sign-in (replace this with your actual sign-in logic)
-        if (isValid(email, password)) {
-            // Retrieve user data from the database
-            ParentDbHelper dbHelper = new ParentDbHelper(this);
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
+        // Check if the user is a parent
+        boolean isParent = parentDbHelper.isValidParent(email, password);
 
-            // Define the columns you want to retrieve from the database
-            String[] projection = {
-                    ParentContract.ParentEntry.COLUMN_NAME,
-                    ParentContract.ParentEntry.COLUMN_SURNAME,
-                    ParentContract.ParentEntry.COLUMN_CHILD_NAME,
-                    ParentContract.ParentEntry.COLUMN_CLASSROOM
-            };
+        // Check if the user is a teacher
+        boolean isTeacher = isValidTeacher(email, password);
 
-            // Define the selection criteria
-            String selection = ParentContract.ParentEntry.COLUMN_EMAIL + " = ? AND " +
-                    ParentContract.ParentEntry.COLUMN_PASSWORD + " = ?";
-            String[] selectionArgs = {email, password};
-
-            // Perform the query
-            Cursor cursor = db.query(
-                    ParentContract.ParentEntry.TABLE_NAME,   // The table to query
-                    projection,                             // The array of columns to return
-                    selection,                              // The columns for the WHERE clause
-                    selectionArgs,                          // The values for the WHERE clause
-                    null,                                   // Don't group the rows
-                    null,                                   // Don't filter by row groups
-                    null                                    // The sort order
-            );
-
-            // Check if the cursor contains any data
-            if (cursor.moveToFirst()) {
-                // Retrieve data from the cursor
-                String name = cursor.getString(cursor.getColumnIndexOrThrow(ParentContract.ParentEntry.COLUMN_NAME));
-                String childName = cursor.getString(cursor.getColumnIndexOrThrow(ParentContract.ParentEntry.COLUMN_CHILD_NAME));
-                String classroom = cursor.getString(cursor.getColumnIndexOrThrow(ParentContract.ParentEntry.COLUMN_CLASSROOM));
-                String surname = cursor.getString(cursor.getColumnIndexOrThrow(ParentContract.ParentEntry.COLUMN_SURNAME));
-
-                // Sign-in successful, navigate to MyChildActivity and pass data
-                Intent intent = new Intent(SignInActivity.this, MyChildActivity.class);
-                intent.putExtra("name", name);
-                intent.putExtra("surname", surname);
-                intent.putExtra("childName", childName);
-                intent.putExtra("email", email);
-                intent.putExtra("classroom", classroom);
-                startActivity(intent);
-                finish(); // Finish this activity to prevent user from navigating back to it
-            } else {
-                // No data found for the given email and password, show error message
-                Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
-            }
-
-            // Close the cursor and the database connection
-            cursor.close();
-            db.close();
+        if (isParent) {
+            // Sign-in successful as parent, navigate to MyChildActivity
+            Intent intent = new Intent(SignInActivity.this, MyChildActivity.class);
+            intent.putExtra("email", email);
+            startActivity(intent);
+            finish();
+        } else if (isTeacher) {
+            // Sign-in successful as teacher, navigate to MyClassroom
+            Intent intent = new Intent(SignInActivity.this, MyClassroomActivity.class);
+            intent.putExtra("email", email);
+            startActivity(intent);
+            finish();
         } else {
             // Sign-in failed, show error message
             Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private boolean isValid(String email, String password) {
-        // Retrieve readable database from ParentDbHelper
-        ParentDbHelper dbHelper = new ParentDbHelper(this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+    private boolean isValidTeacher(String email, String password) {
+        // Retrieve readable database from DatabaseHelper
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
         // Define the columns you want to retrieve from the database
         String[] projection = {
-                ParentContract.ParentEntry._ID
+                DatabaseHelper.COL_EMAIL
         };
 
         // Define the selection criteria
-        String selection = ParentContract.ParentEntry.COLUMN_EMAIL + " = ? AND " +
-                ParentContract.ParentEntry.COLUMN_PASSWORD + " = ?";
+        String selection = DatabaseHelper.COL_EMAIL + " = ? AND " +
+                DatabaseHelper.COL_PASSWORD + " = ?";
         String[] selectionArgs = {email, password};
 
         // Perform the query
         Cursor cursor = db.query(
-                ParentContract.ParentEntry.TABLE_NAME,   // The table to query
-                projection,                             // The array of columns to return
-                selection,                              // The columns for the WHERE clause
-                selectionArgs,                          // The values for the WHERE clause
-                null,                                   // Don't group the rows
-                null,                                   // Don't filter by row groups
-                null                                    // The sort order
+                DatabaseHelper.TABLE_NAME,   // The table to query
+                projection,                 // The array of columns to return
+                selection,                  // The columns for the WHERE clause
+                selectionArgs,              // The values for the WHERE clause
+                null,                       // Don't group the rows
+                null,                       // Don't filter by row groups
+                null                        // The sort order
         );
 
         // Check if the cursor contains any data
@@ -140,3 +105,4 @@ public class SignInActivity extends AppCompatActivity {
         return isValid;
     }
 }
+
